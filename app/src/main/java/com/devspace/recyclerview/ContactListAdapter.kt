@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 class ContactListAdapter :
     ListAdapter <Contact, ContactListAdapter.ContactViewHolder>(ContactDiffUtils()) {
 
+        private lateinit var onClickListerner: (Contact) -> Unit
+
         // criar viwholder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
@@ -19,19 +21,29 @@ class ContactListAdapter :
     }
         // bind : atrelar os dados a view
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val contact = getItem(position)
+        holder.bind(contact, onClickListerner)
     }
+
+    fun SetOnClickListener(onClick: (Contact) -> Unit){
+        onClickListerner = onClick
+    }
+
             // View que segura os dados
-    class ContactViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class ContactViewHolder(private val view: View) : RecyclerView.ViewHolder(view){
 
         private val tvName = view.findViewById<TextView>(R.id.tv_name)
         private val tvPhone = view.findViewById<TextView>(R.id.tv_phone)
         private val ivPhoto = view.findViewById<ImageView>(R.id.imageView)
 
-        fun bind(contact: Contact){
+        fun bind(contact: Contact, onClick: (Contact) -> Unit){
             tvName.text = contact.name
             tvPhone.text = contact.phone
             ivPhoto.setImageResource(contact.icon)
+
+            view.setOnClickListener {
+                onClick(contact)
+            }
 
         }
     }

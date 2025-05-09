@@ -1,12 +1,18 @@
 package com.devspace.recyclerview
 
+
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +26,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         val rvlist = findViewById<RecyclerView>(R.id.rv_list)
+        val ivgrid = findViewById<ImageView>(R.id.im_grid)
+        val ivlist = findViewById<ImageView>(R.id.im_list)
         val adapter = ContactListAdapter()
+
+
         rvlist.adapter = adapter
         rvlist.layoutManager = LinearLayoutManager(this)
         adapter.submitList(contacts)
+
+        ivgrid.setOnClickListener {
+            rvlist.layoutManager = GridLayoutManager(this,2)
+    }
+        ivlist.setOnClickListener {
+            rvlist.layoutManager = LinearLayoutManager(this)
+        }
+
+        adapter.SetOnClickListener { contact ->
+            val intent = Intent(this, ContactDetailsActivity::class.java)
+
+            intent.putExtra("contact", contact.name)
+            intent.putExtra("phone", contact.phone)
+            intent.putExtra("icon", contact.icon)
+            //Log.i("TAG", "onCreate: $contact")
+
+            startActivity(intent)
+        }
     }
 }
 
